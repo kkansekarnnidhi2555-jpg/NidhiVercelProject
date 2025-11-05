@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-46TC3XZ7XX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-46TC3XZ7XX');
+    </script>
+     
+    <meta charset="UTF-8" />
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>ToDo • Notes</title>
+     
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+      <style>
+        :root {
+            --primary: #007bff;
+            --primary-light: #3298ff;
+            --danger: #dc3545;
+            --success: #28a745;
+            --background: #f6f9ff;
+            --text-primary: #0a234a;
+            --text-secondary: #3a5068;
+            --card-bg: #ffffffcc;
+            --surface: #ffffff;
+            --shadow: 0 8px 24px rgba(0, 123, 255, 0.3);
+            --radius: 18px;
+            --muted: #e4ebff;
+        }
+
+        [data-theme="dark"] {
+            --background: #0e1a3d;
+            --text-primary: #c6d7ff;
+            --text-secondary: #8ea4d9;
+            --card-bg: #142c59cc;
+            --shadow: 0 8px 24px rgba(50, 130, 255, 0.6);
+            --muted: #24417d;
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            /* vertically center the label & switch */
+            justify-content: flex-end;
+            /* push to the right */
+            gap: 8px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            /* spread welcome/progress and toggle */
+            align-items: center;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin: 0 0 8px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            user-select: none;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 22px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 880px;
+            width: 100%;
+            padding: 26px;
+            transition: box-shadow .3s, transform .15s;
+        }
+
+        .card:hover {
+            box-shadow: 0 14px 36px rgba(0, 123, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 800;
+            border: none;
+            border-radius: 12px;
+            padding: 11px 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 18px rgba(0, 123, 255, 0.35);
+            transition: transform .12s, background .25s;
+        }
+
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn.danger {
+            background: var(--danger);
+        }
+
+        .btn.success {
+            background: var(--success);
+        }
+
+        .btn.small {
+            padding: 8px 10px;
+            font-size: .92rem;
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: none;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 2px solid var(--muted);
+            font-size: 1rem;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            outline: none;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .nav-tabs button {
+            padding: 10px 16px;
+            font-weight: 800;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(50, 130, 255, 0.15);
+            transition: background .25s, color .25s, transform .15s;
+        }
+
+        .nav-tabs button:hover,
+        .nav-tabs button.active {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 18px;
+        }
+
+        @media (max-width:900px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        section {
+            display: none;
+            animation: fadeInUp .45s ease forwards;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--muted);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 14px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .task,
+        .note {
+            padding: 14px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 80, 0.08);
+            position: relative;
+            transition: transform .15s, box-shadow .25s;
+            background: linear-gradient(180deg, #eaf2ff, #d8e7ff);
+            border-left: 6px solid var(--primary);
+        }
+
+        .task:hover,
+        .note:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0, 97, 255, 0.18);
+        }
+
+        .task.completed {
+            background: linear-gradient(180deg, #dff7e9, #b9efcf);
+            border-color: #aee7c5;
+            opacity: .92;
+        }
+
+        .task-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 900;
+        }
+
+        .task-notes {
+            margin-top: 6px;
+            color: var(--text-secondary);
+            font-size: .92rem;
+            white-space: pre-wrap;
+        }
+
+        .note {
+            background: #fff3a8;
+            border: 1px solid #f1da6d;
+            transform: rotate(-.8deg);
+        }
+
+        .note:hover {
+            transform: rotate(0deg) translateY(-2px);
+        }
+
+        .note-title {
+            font-weight: 900;
+        }
+
+        .note-content {
+            margin: 6px 0 8px;
+            color: #624a00;
+            white-space: pre-wrap;
+        }
+
+        .note-meta {
+            font-size: .8rem;
+            opacity: .8;
+        }
+
+        #progress-ring {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 4px;
+        }
+
+        #progress-label {
+            font-weight: 900;
+            font-size: 1.02rem;
+            color: var(--primary);
+            min-width: 90px;
+            text-align: center;
+        }
+
+        dialog.confirm-dialog {
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--muted);
+            border-radius: 8px;
+            padding: 10px 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+      <div class="card" id="login-wrapper" role="main" aria-label="Login">
+            <h1>ToDo Work</h1>
+            <p class="subtitle">Productivity in blue & white — but never boring.</p>
+            <label for="username-input">Username</label>
+            <input id="username-input" type="text" placeholder="Your username" autocomplete="username" />
+            <label for="password-input">Password</label>
+            <input id="password-input" type="password" placeholder="Your password" autocomplete="current-password" />
+            <button id="login-btn" class="btn">Log in</button>
+          </div>
+
+      <div class="card" id="app" role="main" aria-label="Productivity App" style="display:none;">
+            <header class="topbar">
+                  <div>
+                        <div id="welcome-msg" aria-live="polite" style="font-weight:900; margin-bottom:8px;"></div>
+                        <div id="progress-ring" aria-label="Task progress" style="gap: 10px;">
+                      <svg id="progress-svg" viewBox="0 0 40 40" width="48" height="48" aria-hidden="true">
+                           
+                        <circle cx="20" cy="20" r="17" fill="none" stroke="#e4ebff" stroke-width="6" />
+                           
+                        <circle id="ring-bar" cx="20" cy="20" r="17" fill="none" stroke="#39d98a" stroke-width="6"      
+                            stroke-linecap="round" stroke-dasharray="106.81" stroke-dashoffset="106.81"
+                            transform="rotate(-90 20 20)" />
+                         
+                    </svg>
+                      <span id="progress-label">0 / 0 done</span>
+                </div>
+
+                      </div>
+                  <div class="theme-toggle-container">
+                        <label for="theme-toggle">Dark</label>
+                        <span class="switch"><input type="checkbox" id="theme-toggle"
+                        aria-label="Dark mode toggle" /></span>
+                      </div>
+                </header>
+
+            <input id="search-input" type="text" placeholder="Search tasks or notes…" aria-label="Search" />
+
+            <div class="nav-tabs" role="tablist">
+                  <button class="tab-btn active" data-target="todo-section" role="tab"
+                aria-selected="true">Tasks</button>
+                  <button class="tab-btn" data-target="reminders-section" role="tab"
+                aria-selected="false">Reminders</button>
+                  <button class="tab-btn" data-target="notes-section" role="tab" aria-selected="false">Notes</button>
+                  <button class="tab-btn" data-target="settings-section" role="tab"
+                aria-selected="false">Settings</button>
+                </div>
+
+            <main>
+                  <div class="panel">
+                        <!-- Tasks -->
+                        <section id="todo-section" class="active" role="tabpanel">
+                              <h2>New Task</h2>
+                              <label for="todo-task">Task</label>
+                              <input id="todo-task" type="text" placeholder="Enter your task… (Ctrl+Enter to add)" />
+                              <label for="todo-notes">Notes</label>
+                              <textarea id="todo-notes" placeholder="Task details (optional)"></textarea>
+                              <label for="todo-dueDate">Due Date</label>
+                              <input id="todo-dueDate" type="datetime-local" />
+                              <button id="add-todo-btn" class="btn">➕ Add Task</button>
+                              <ul id="todo-list"></ul>
+                            </section>
+                        <!-- Reminders -->
+                        <section id="reminders-section" role="tabpanel">
+                              <h2>Upcoming</h2>
+                              <ul id="reminder-list"></ul>
+                            </section>
+                      </div>
+
+                  <div class="panel">
+                        <!-- Notes -->
+                        <section id="notes-section" role="tabpanel">
+                              <h2>New Note</h2>
+                              <label for="note-title">Title</label>
+                              <input id="note-title" type="text" placeholder="Note title… (Shift+Enter to add)" />
+                              <label for="note-content">Content</label>
+                              <textarea id="note-content" placeholder="Write your note here…"></textarea>
+                              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <button id="voice-btn" class="btn ghost small">🎤 Voice</button>
+                                    <button id="add-note-btn" class="btn">📝 Add Note</button>
+                                  </div>
+                              <ul id="notes-list"></ul>
+                            </section>
+                        <!-- Settings -->
+                        <section id="settings-section" role="tabpanel">
+                              <h2>Settings</h2>
+                              <p>Logged in as: <strong id="user-display" aria-live="polite"></strong></p>
+                              <!-- Profile -->
+                              <div>
+                                    <h3>Profile</h3>
+                                    <label for="profile-username">Username</label>
+                                    <input id="profile-username" type="text" />
+                                    <label for="profile-password">New Password</label>
+                                    <input id="profile-password" type="password" />
+                                    <button id="save-profile-btn" class="btn small">Save Profile</button>
+                                  </div>
+                              <!-- Recycle Bin -->
+                              <div style="margin-top:24px;">
+                                    <h3>Recycle Bin</h3>
+                                    <ul id="deleted-items-list"></ul>
+                                    <button id="empty-bin-btn" class="btn danger small">Empty Recycle Bin</button>
+                                  </div>
+                              <button id="logout-btn" class="btn danger" style="margin-top:16px;">Logout</button>
+                            </section>
+                      </div>
+                </main>
+          </div>
+
+      <!-- Confirm Dialog Template -->
+      <dialog id="confirm-dialog" class="confirm-dialog" aria-modal="true">
+            <p id="confirm-message"></p>
+            <menu>
+                  <button id="confirm-no" class="btn small">Cancel</button>
+                  <button id="confirm-yes" class="btn small success">OK</button>
+                </menu>
+          </dialog>
+
+      <!-- Toast Notifications -->
+      <div class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        (() => {
+            // State
+            let currentUser = null, todos = [], notes = [], deletedItems = [];
+
+            const loginWrapper = document.getElementById('login-wrapper'), app = document.getElementById('app');
+            const usernameInput = document.getElementById('username-input'), passwordInput = document.getElementById('password-input');
+            const loginBtn = document.getElementById('login-btn'), logoutBtn = document.getElementById('logout-btn');
+            const welcomeMsg = document.getElementById('welcome-msg'), userDisplay = document.getElementById('user-display');
+            const tabs = document.querySelectorAll('.tab-btn'), sections = document.querySelectorAll('section');
+            const todoTaskInput = document.getElementById('todo-task'), todoNotesInput = document.getElementById('todo-notes');
+            const todoDueDateInput = document.getElementById('todo-dueDate'), addTodoBtn = document.getElementById('add-todo-btn');
+            const todoList = document.getElementById('todo-list'), reminderList = document.getElementById('reminder-list');
+            const noteTitleInput = document.getElementById('note-title'), noteContentInput = document.getElementById('note-content');
+            const addNoteBtn = document.getElementById('add-note-btn'), notesList = document.getElementById('notes-list');
+            const voiceBtn = document.getElementById('voice-btn'), searchInput = document.getElementById('search-input');
+            const themeToggle = document.getElementById('theme-toggle');
+            const profileUsername = document.getElementById('profile-username'), profilePassword = document.getElementById('profile-password'), saveProfileBtn = document.getElementById('save-profile-btn');
+            const deletedList = document.getElementById('deleted-items-list'), emptyBinBtn = document.getElementById('empty-bin-btn');
+            const confirmDialog = document.getElementById('confirm-dialog'), confirmMessage = document.getElementById('confirm-message');
+            const confirmYes = document.getElementById('confirm-yes'), confirmNo = document.getElementById('confirm-no');
+            const toastContainer = document.querySelector('.toast-container');
+            const ringBar = document.getElementById('ring-bar'), progressLabel = document.getElementById('progress-label');
+
+            function getUserKey(key) { return `app_${currentUser}_${key}`; }
+
+            // Storage
+            function saveAll() {
+                localStorage.setItem(getUserKey('todos'), JSON.stringify(todos));
+                localStorage.setItem(getUserKey('notes'), JSON.stringify(notes));
+                localStorage.setItem(getUserKey('deleted'), JSON.stringify(deletedItems));
+                localStorage.setItem(getUserKey('theme'), document.body.getAttribute('data-theme') || 'light');
+            }
+            function loadAll() {
+                todos = JSON.parse(localStorage.getItem(getUserKey('todos')) || '[]');
+                notes = JSON.parse(localStorage.getItem(getUserKey('notes')) || '[]');
+                deletedItems = JSON.parse(localStorage.getItem(getUserKey('deleted')) || '[]');
+            }
+
+            // Toast
+            function showToast(msg) {
+                const div = document.createElement('div');
+                div.className = 'toast';
+                div.textContent = msg;
+                toastContainer.appendChild(div);
+                setTimeout(() => {
+                    div.remove();
+                }, 3000);
+            }
+
+            // Confirm dialog
+            function confirmAction(message) {
+                return new Promise(resolve => {
+                    confirmMessage.textContent = message;
+                    confirmDialog.showModal();
+                    function onYes() { cleanup(); resolve(true); }
+                    function onNo() { cleanup(); resolve(false); }
+                    function cleanup() {
+                        confirmYes.removeEventListener('click', onYes);
+                        confirmNo.removeEventListener('click', onNo);
+                        confirmDialog.close();
+                    }
+                    confirmYes.addEventListener('click', onYes);
+                    confirmNo.addEventListener('click', onNo);
+                });
+            }
+
+            // Theme
+            function applyTheme(theme) {
+                if (theme === 'dark') document.body.setAttribute('data-theme', 'dark');
+                else document.body.removeAttribute('data-theme');
+                themeToggle.checked = (theme === 'dark');
+            }
+            themeToggle.addEventListener('change', () => {
+                applyTheme(themeToggle.checked ? 'dark' : 'light');
+                saveAll();
+            });
+
+            // Render
+            function formatDate(dateStr) {
+                if (!dateStr) return '';
+                const d = new Date(dateStr);
+                return isNaN(d) ? '' : d.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+            }
+
+            function updateProgress() {
+                const total = todos.length, done = todos.filter(t => t.completed).length;
+                const circumference = 2 * Math.PI * 17;
+                const offset = circumference * (1 - (done / (total || 1)));
+                ringBar.setAttribute('stroke-dashoffset', offset);
+                if (total && done / total >= 0.7) ringBar.setAttribute('stroke', 'var(--success)');
+                else ringBar.setAttribute('stroke', 'var(--primary)');
+                progressLabel.textContent = total ? `${done} / ${total} done` : '0 / 0 done';
+            }
+
+            function renderTodos() {
+                todoList.innerHTML = '';
+                const q = searchInput.value.trim().toLowerCase();
+                const filtered = todos.filter(t => t.text.toLowerCase().includes(q) || (t.notes || '').toLowerCase().includes(q));
+                if (!filtered.length) {
+                    todoList.innerHTML = '<li style="text-align:center;">No matching tasks.</li>';
+                    updateProgress();
+                    return;
+                }
+                filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                filtered.forEach((t, idx) => {
+                    const li = document.createElement('li');
+                    li.className = `task ${t.completed ? 'completed' : ''}`;
+                    const row = document.createElement('div');
+                    row.className = 'task-row';
+                    const title = document.createElement('span');
+                    title.textContent = t.text;
+                    row.appendChild(title);
+                    if (t.dueDate) {
+                        const due = document.createElement('span');
+                        due.textContent = '⏰ ' + formatDate(t.dueDate);
+                        row.appendChild(due);
+                    }
+                    li.appendChild(row);
+                    if (t.notes) {
+                        const notesDiv = document.createElement('div');
+                        notesDiv.className = 'task-notes';
+                        notesDiv.textContent = t.notes;
+                        li.appendChild(notesDiv);
+                    }
+                    const actions = document.createElement('div');
+                    actions.className = 'actions';
+                    const btnComplete = document.createElement('button');
+                    btnComplete.className = 'btn small success';
+                    btnComplete.textContent = t.completed ? 'Pending' : 'Done';
+                    btnComplete.addEventListener('click', () => {
+                        t.completed = !t.completed;
+                        saveAll(); renderTodos(); renderReminders(); updateProgress();
+                        showToast(t.completed ? 'Marked done' : 'Marked pending');
+                    });
+                    const btnEdit = document.createElement('button');
+                    btnEdit.className = 'btn small ghost';
+                    btnEdit.textContent = 'Edit';
+                    btnEdit.addEventListener('click', () => openTaskEditor(idx));
+                    const btnDelete = document.createElement('button');
+                    btnDelete.className = 'btn small danger';
+                    btnDelete.textContent = 'Delete';
+                    btnDelete.addEventListener('click', async () => {
+                        if (await confirmAction('Delete this task?')) {
+                            const [deleted] = todos.splice(idx, 1);
+                            deletedItems.push({ type: 'task', item: deleted });
+                            saveAll(); renderTodos(); renderReminders(); renderRecycle(); updateProgress();
+                            showToast('Task deleted');
+                        }
+                    });
+                    actions.append(btnComplete, btnEdit, btnDelete);
+                    li.appendChild(actions);
+                    todoList.appendChild(li);
+                });
+                updateProgress();
+            }
+
+            function renderReminders() {
+                reminderList.innerHTML = '';
+                const rem = todos.filter(t => t.dueDate && !t.completed).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+                if (!rem.length) {
+                    reminderList.innerHTML = '<li style="text-align:center;">No upcoming reminders.</li>';
+                    return;
+                }
+                rem.forEach(t => {
+                    const li = document.createElement('li');
+                    li.className = 'task';
+                    li.innerHTML = `<div class="task-row"><strong>${t.text}</strong><span>Due: ${formatDate(t.dueDate)}</span></div>`;
+                    reminderList.appendChild(li);
+                });
+            }
+
+            function renderNotes() {
+                notesList.innerHTML = '';
+                const q = searchInput.value.trim().toLowerCase();
+                const filtered = notes.filter(n => n.title.toLowerCase().includes(q) || (n.content || '').toLowerCase().includes(q));
+                if (!filtered.length) {
+                    notesList.innerHTML = '<li class="note" style="text-align:center;">No notes found.</li>';
+                    return;
+                }
+                filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                filtered.forEach((n, idx) => {
+                    const li = document.createElement('li');
+                    li.className = 'note';
+                    const title = document.createElement('div');
+                    title.className = 'note-title';
+                    title.textContent = n.title;
+                    li.appendChild(title);
+                    if (n.content) {
+                        const content = document.createElement('div');
+                        content.className = 'note-content';
+                        content.textContent = n.content;
+                        li.appendChild(content);
+                    }
+                    const meta = document.createElement('div');
+                    meta.className = 'note-meta';
+                    meta.textContent = 'Created: ' + formatDate(n.createdAt);
+                    li.appendChild(meta);
+                    const actions = document.createElement('div');
+                    actions.className = 'actions';
+                    const btnEdit = document.createElement('button');
+                    btnEdit.className = 'btn small ghost';
+                    btnEdit.textContent = 'Edit';
+                    btnEdit.addEventListener('click', () => openNoteEditor(idx));
+                    const btnDelete = document.createElement('button');
+                    btnDelete.className = 'btn small danger';
+                    btnDelete.textContent = 'Delete';
+                    btnDelete.addEventListener('click', async () => {
+                        if (await confirmAction('Delete this note?')) {
+                            const [deleted] = notes.splice(idx, 1);
+                            deletedItems.push({ type: 'note', item: deleted });
+                            saveAll(); renderNotes(); renderRecycle();
+                            showToast('Note deleted');
+                        }
+                    });
+                    actions.append(btnEdit, btnDelete);
+                    li.appendChild(actions);
+                    notesList.appendChild(li);
+                });
+            }
+
+            function renderRecycle() {
+                deletedList.innerHTML = '';
+                if (!deletedItems.length) {
+                    deletedList.innerHTML = '<li>No items in Recycle Bin.</li>';
+                    return;
+                }
+                deletedItems.forEach((d, i) => {
+                    const li = document.createElement('li');
+                    li.className = 'task';
+                    const row = document.createElement('div');
+                    row.className = 'task-row';
+                    const span = document.createElement('span');
+                    span.textContent = `${d.type === 'task' ? d.item.text : d.item.title}`;
+                    row.appendChild(span);
+                    const btnRestore = document.createElement('button');
+                    btnRestore.className = 'btn small success';
+                    btnRestore.textContent = 'Restore';
+                    btnRestore.addEventListener('click', () => {
+                        deletedItems.splice(i, 1);
+                        if (d.type === 'task') todos.push(d.item);
+                        else notes.push(d.item);
+                        saveAll(); renderTodos(); renderNotes(); renderRecycle(); renderReminders();
+                        showToast('Restored');
+                    });
+                    row.appendChild(btnRestore);
+                    li.appendChild(row);
+                    deletedList.appendChild(li);
+                });
+            }
+
+            // Editors
+            function openTaskEditor(idx) {
+                const t = todos[idx];
+                confirmMessage.textContent = '';
+                confirmDialog.innerHTML = `
+      <form method="dialog">
+        <label>Task</label><input id="e-text" type="text" value="${t.text}" required />
+        <label>Notes</label><textarea id="e-notes">${t.notes || ''}</textarea>
+        <label>Due Date</label><input id="e-due" type="datetime-local" value="${t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 16) : ''}" />
+        <menu>
+          <button type="submit" class="btn small success">Save</button>
+          <button type="button" class="btn small">Cancel</button>
+        </menu>
+      </form>`;
+                confirmDialog.showModal();
+                confirmDialog.querySelector('[type="submit"]').addEventListener('click', () => {
+                    const newText = document.getElementById('e-text').value.trim();
+                    if (!newText) return alert('Task cannot be empty!');
+                    t.text = newText;
+                    t.notes = document.getElementById('e-notes').value.trim();
+                    t.dueDate = document.getElementById('e-due').value || null;
+                    saveAll(); renderTodos(); renderReminders(); confirmDialog.close();
+                    showToast('Task updated');
+                });
+                confirmDialog.querySelector('[type="button"]').addEventListener('click', () => confirmDialog.close());
+            }
+
+            function openNoteEditor(idx) {
+                const n = notes[idx];
+                confirmDialog.innerHTML = `
+      <form method="dialog">
+        <label>Title</label><input id="e-title" type="text" value="${n.title}" required />
+        <label>Content</label><textarea id="e-content">${n.content || ''}</textarea>
+        <menu>
+          <button type="submit" class="btn small success">Save</button>
+          <button type="button" class="btn small">Cancel</button>
+        </menu>
+      </form>`;
+                confirmDialog.showModal();
+                confirmDialog.querySelector('[type="submit"]').addEventListener('click', () => {
+                    const newTitle = document.getElementById('e-title').value.trim();
+                    if (!newTitle) return alert('Title cannot be empty!');
+                    n.title = newTitle;
+                    n.content = document.getElementById('e-content').value.trim();
+                    saveAll(); renderNotes(); confirmDialog.close();
+                    showToast('Note updated');
+                });
+                confirmDialog.querySelector('[type="button"]').addEventListener('click', () => confirmDialog.close());
+            }
+
+            // Events
+            loginBtn.addEventListener('click', () => {
+                const user = usernameInput.value.trim(), pass = passwordInput.value;
+                if (!user || !pass) return alert('Enter both username and password');
+                currentUser = user;
+                loginWrapper.style.display = 'none'; app.style.display = 'grid';
+                userDisplay.textContent = user; welcomeMsg.textContent = `Welcome, ${user}! Ready?`;
+                loadAll(); renderTodos(); renderReminders(); renderNotes(); renderRecycle();
+                applyTheme(localStorage.getItem(getUserKey('theme')) || 'light');
+            });
+
+            logoutBtn.addEventListener('click', async () => {
+                if (await confirmAction('Logout?')) {
+                    currentUser = null; todos = []; notes = []; deletedItems = [];
+                    loginWrapper.style.display = 'block'; app.style.display = 'none';
+                    usernameInput.value = passwordInput.value = '';
+                    document.body.removeAttribute('data-theme');
+                    showToast('Logged out');
+                }
+            });
+
+            addTodoBtn.addEventListener('click', () => {
+                const text = todoTaskInput.value.trim();
+                if (!text) return alert('Task required');
+                todos.push({ text, notes: todoNotesInput.value.trim(), dueDate: todoDueDateInput.value || null, completed: false, createdAt: new Date().toISOString() });
+                saveAll(); renderTodos(); renderReminders();
+                todoTaskInput.value = todoNotesInput.value = todoDueDateInput.value = '';
+                showToast('Task added');
+            });
+
+            addNoteBtn.addEventListener('click', () => {
+                const title = noteTitleInput.value.trim();
+                if (!title) return alert('Note title required');
+                notes.push({ title, content: noteContentInput.value.trim(), createdAt: new Date().toISOString() });
+                saveAll(); renderNotes();
+                noteTitleInput.value = noteContentInput.value = '';
+                showToast('Note added');
+            });
+
+            voiceBtn.addEventListener('click', () => {
+                if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) return alert('Voice not supported');
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recog = new SpeechRecognition();
+                recog.lang = 'en-US'; recog.start();
+                recog.onresult = e => noteContentInput.value += e.results[0][0].transcript + ' ';
+            });
+
+            searchInput.addEventListener('input', () => { renderTodos(); renderReminders(); renderNotes(); });
+
+            saveProfileBtn.addEventListener('click', () => {
+                const newUser = profileUsername.value.trim(), newPass = profilePassword.value;
+                if (!newUser && !newPass) return alert('Nothing to save');
+                if (newUser) {
+                    const oldKeyPrefix = `app_${currentUser}_`;
+                    ['todos', 'notes', 'deleted', 'theme'].forEach(k => {
+                        const v = localStorage.getItem(oldKeyPrefix + k);
+                        if (v !== null) localStorage.setItem(`app_${newUser}_${k}`, v), localStorage.removeItem(oldKeyPrefix + k);
+                    });
+                    currentUser = newUser;
+                    usernameInput.value = newUser;
+                }
+                if (newPass) {
+                    // In production, hash or handle securely. Here, just simulate.
+                    showToast('Password changed (simulated)');
+                }
+                userDisplay.textContent = currentUser;
+                profilePassword.value = '';
+                saveAll();
+                showToast('Profile saved');
+            });
+
+            emptyBinBtn.addEventListener('click', async () => {
+                if (deletedItems.length && await confirmAction('Delete all permanently?')) {
+                    deletedItems = []; saveAll(); renderRecycle(); showToast('Recycle bin emptied');
+                }
+            });
+
+            tabs.forEach(tab => tab.addEventListener('click', () => {
+                tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
+                const target = tab.getAttribute('data-target');
+                sections.forEach(s => s.id === target ? s.classList.add('active') : s.classList.remove('active'));
+            }));
+
+            // Keyboard shortcuts
+            usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') loginBtn.click(); });
+            todoTaskInput.addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) addTodoBtn.click(); });
+            noteTitleInput.addEventListener('keydown', e => { if (e.key === 'Enter' && e.shiftKey) addNoteBtn.click(); });
+
+        })();
+    </script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9iHN_8mIuOQ2YCm5qC1qh-fQOGVokcbU",
+            authDomain: "to-do-list-e5282.firebaseapp.com",
+            projectId: "to-do-list-e5282",
+            storageBucket: "to-do-list-e5282.firebasestorage.app",
+            messagingSenderId: "507548576654",
+            appId: "1:507548576654:web:c67e42b34cd44c0f6712df",
+            measurementId: "G-ENKEL4KXM0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</body>
+
+</html>
